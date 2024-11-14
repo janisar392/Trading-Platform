@@ -11,4 +11,10 @@ public class HomeController {
         return "Welcome to Trading Platfrom , how is your day";
 
     }
+
+    @GetMapping("/api")
+    public static String secure(){
+        return "Welcome to Trading Platfrom ,Secure";
+
+    }
 }
