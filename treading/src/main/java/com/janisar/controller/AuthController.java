@@ -8,6 +8,7 @@ import com.janisar.response.AuthResponse;
 import com.janisar.service.CustomerUserDetailsService;
 import com.janisar.service.EmailService;
 import com.janisar.service.TwoFactorOtpService;
+import com.janisar.service.WatchlistService;
 import com.janisar.utils.OtpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,9 @@ public class AuthController {
     private TwoFactorOtpService twoFactorOtpService;
 
     @Autowired
+    private WatchlistService watchlistService;
+
+    @Autowired
     private UserRepository userRepository;
     @Autowired
     private CustomerUserDetailsService customerUserDetailsService;
@@ -49,6 +53,8 @@ public class AuthController {
         newUser.setFullname(user.getFullname());
 
         User saveUser = userRepository.save(newUser);
+
+        watchlistService.createWatchList(saveUser);
 
         Authentication auth = new UsernamePasswordAuthenticationToken(
                 user.getEmail(),
@@ -125,6 +131,7 @@ public class AuthController {
 
     }
 
+    @PostMapping("/two-factor/otp/{otp}")
     public ResponseEntity<AuthResponse> verifySigninOtp(
             @PathVariable String otp,
             @RequestParam String id) throws Exception{
